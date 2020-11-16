@@ -5,6 +5,8 @@ use std::env::args;
 use gio::prelude::*;
 use gtk::prelude::*;
 
+const BASE_CAT_PATH: &str = "resources/images";
+
 fn build_ui(app: &gtk::Application) {
     let glade_src = include_str!("glade_config.glade");
     let builder = gtk::Builder::from_string(glade_src);
@@ -29,6 +31,9 @@ fn build_ui(app: &gtk::Application) {
     let message_output: gtk::Label = builder
         .get_object("message_output")
         .unwrap();
+    let is_dead_switch: gtk::Switch = builder
+        .get_object("is_dead_switch")
+        .unwrap();
     let image_output: gtk::Image = builder
         .get_object("image_output")
         .unwrap();
@@ -41,6 +46,13 @@ fn build_ui(app: &gtk::Application) {
                 .get_text()
                 .as_str()
         ));
+
+        let cat_type = if gtk::SwitchExt::get_active(&is_dead_switch) { 
+            "cat_dead.jpg" 
+        } else { 
+            "cat.jpg" 
+        };
+        image_output_clone.set_from_file(format!("{}/{}", BASE_CAT_PATH, cat_type));
         image_output_clone.show();
     });
 
